@@ -1,0 +1,5 @@
+{
+  "name": "MediSys AI Coordinator",
+  "description": "A Hospital Information System (HIS) prototype integrated with Gemini AI for routing medical inquiries, managing inventory/accounting, and ensuring RME regulatory compliance.",
+  "requestFramePermissions": []
+}
