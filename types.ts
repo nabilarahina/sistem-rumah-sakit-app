@@ -1,8 +1,10 @@
+
 export enum AgentType {
   HSC = 'HSC', // Hospital System Coordinator (Router)
+  PMA = 'PMA', // Patient Management Agent
+  ASA = 'ASA', // Appointment Scheduler Agent
   MIA = 'MIA', // Medical Information Agent
-  IFA = 'IFA', // Inventory & Finance Agent
-  RCA = 'RCA', // RME Compliance Agent
+  HRG = 'HRG', // Hospital Report Generator Agent (formerly IFA)
 }
 
 export interface ChatMessage {
@@ -33,6 +35,13 @@ export interface PatientRecord {
   id: string;
   name: string;
   lastVisit: string;
-  integrated: boolean; // Connected to Farmasi/Lab
-  backupStatus: 'Secure' | 'Pending';
+  status: 'Inpatient' | 'Outpatient' | 'Discharged';
+  ward?: string;
+}
+
+export interface DoctorSchedule {
+  id: string;
+  name: string;
+  specialty: string;
+  availableSlots: string[];
 }
