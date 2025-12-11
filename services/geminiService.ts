@@ -7,26 +7,27 @@ const apiKey = process.env.API_KEY || '';
 // Initialize client only if key is present
 const ai = apiKey ? new GoogleGenAI({ apiKey }) : null;
 
+interface GeminiResponse {
+  text: string;
+  sources?: Array<{ title: string; uri: string }>;
+}
+
 export const sendMessageToGemini = async (
   history: ChatMessage[],
   currentMessage: string,
   agentType: AgentType
-): Promise<string> => {
+): Promise<GeminiResponse> => {
   if (!ai) {
-    return "Error: API_KEY is missing. Please configure the environment.";
+    return { text: "Error: API_KEY is missing. Please configure the environment." };
   }
 
   try {
     const modelId = 'gemini-2.5-flash'; 
     
-    // Construct the prompt with history context
-    // We strictly use the system instruction for the specific agent role
     const systemInstruction = SYSTEM_INSTRUCTIONS[agentType];
 
-    // Convert internal history format to a simple string context for the model
-    // (Simpler than maintaining full chat session objects for this prototype switch-logic)
     const conversationContext = history
-      .slice(-10) // Keep last 10 messages for context window efficiency
+      .slice(-10) 
       .map(msg => `${msg.role === 'user' ? 'User' : 'Agent'}: ${msg.content}`)
       .join('\n');
 
@@ -40,19 +41,36 @@ export const sendMessageToGemini = async (
       ${currentMessage}
     `;
 
+    // Enable Google Search only for MIA agent
+    const tools = agentType === AgentType.MIA ? [{ googleSearch: {} }] : undefined;
+
     const response = await ai.models.generateContent({
       model: modelId,
       contents: fullPrompt, 
       config: {
-        temperature: 0.7, // Balanced creativity and accuracy
+        temperature: 0.7, 
         maxOutputTokens: 500,
+        tools: tools,
       }
     });
 
-    return response.text || "I apologize, I could not generate a response.";
+    const text = response.text || "I apologize, I could not generate a response.";
+    
+    // Extract grounding sources if available
+    const groundingChunks = response.candidates?.[0]?.groundingMetadata?.groundingChunks;
+    let sources: Array<{ title: string; uri: string }> | undefined;
+
+    if (groundingChunks) {
+      sources = groundingChunks
+        .map((chunk: any) => chunk.web)
+        .filter((web: any) => web && web.uri && web.title)
+        .map((web: any) => ({ title: web.title, uri: web.uri }));
+    }
+
+    return { text, sources };
 
   } catch (error) {
     console.error("Gemini API Error:", error);
-    return "System Error: Unable to connect to the AI model. Please try again later.";
+    return { text: "System Error: Unable to connect to the AI model. Please try again later." };
   }
 };

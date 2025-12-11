@@ -50,15 +50,16 @@ const App: React.FC = () => {
     setIsLoading(true);
 
     // 2. Call Gemini Service
-    const responseText = await sendMessageToGemini(messages, text, currentAgent);
+    const response = await sendMessageToGemini(messages, text, currentAgent);
 
     // 3. Add AI Response
     const aiMsg: ChatMessage = {
       id: (Date.now() + 1).toString(),
       role: 'model',
-      content: responseText,
+      content: response.text,
       timestamp: new Date(),
-      agentUsed: currentAgent
+      agentUsed: currentAgent,
+      sources: response.sources
     };
 
     setMessages(prev => [...prev, aiMsg]);
@@ -76,13 +77,22 @@ const App: React.FC = () => {
         return <DashboardMIA />;
       case AgentType.HSC:
       default:
-        // HSC just shows a welcome screen or empty state if we want, 
-        // but let's make it a clean landing page area
         return (
           <div className="h-full flex items-center justify-center p-10 text-slate-400 text-center">
              <div>
                 <h1 className="text-4xl font-light text-slate-300 mb-4">Hospital System Coordinator</h1>
                 <p>Select an agent from the sidebar or start chatting to route your inquiry.</p>
+                <div className="mt-8 grid grid-cols-1 gap-4 max-w-md mx-auto text-left text-sm">
+                  <div className="p-4 bg-white rounded border border-slate-200">
+                    <span className="font-bold text-slate-700">Medical Info:</span> Non-diagnostic health queries.
+                  </div>
+                  <div className="p-4 bg-white rounded border border-slate-200">
+                    <span className="font-bold text-slate-700">Inventory & Finance:</span> Stock, Billing, SIA.
+                  </div>
+                  <div className="p-4 bg-white rounded border border-slate-200">
+                    <span className="font-bold text-slate-700">RME Compliance:</span> Permenkes 24/2022.
+                  </div>
+                </div>
              </div>
           </div>
         );

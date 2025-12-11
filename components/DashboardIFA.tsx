@@ -1,7 +1,7 @@
 import React from 'react';
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, Legend } from 'recharts';
 import { InventoryItem, CashFlowData } from '../types';
-import { TrendingUp, AlertTriangle, PackageCheck, DollarSign } from 'lucide-react';
+import { TrendingUp, AlertTriangle, PackageCheck, DollarSign, Building2 } from 'lucide-react';
 
 const mockCashFlow: CashFlowData[] = [
   { month: 'Jan', revenue: 4000, expenses: 2400 },
@@ -24,10 +24,15 @@ const DashboardIFA: React.FC = () => {
   return (
     <div className="h-full overflow-y-auto p-6 bg-slate-50 space-y-6">
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
-          <TrendingUp className="text-teal-600" />
-          Accounting System (SIA) Overview
-        </h2>
+        <div>
+          <h2 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
+            <TrendingUp className="text-teal-600" />
+            Accounting System (SIA)
+          </h2>
+          <p className="text-xs text-slate-500 flex items-center gap-1 mt-1">
+            <Building2 size={12} /> RSI Ibnu Sina Main Ledger
+          </p>
+        </div>
         <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-2.5 py-0.5 rounded border border-blue-400">COSO Framework Active</span>
       </div>
 
@@ -50,8 +55,8 @@ const DashboardIFA: React.FC = () => {
               <AlertTriangle className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-sm text-slate-500">Low Stock Alerts</p>
-              <p className="text-xl font-bold text-slate-800">2 Items</p>
+              <p className="text-sm text-slate-500">Stock Alerts</p>
+              <p className="text-xl font-bold text-slate-800">2 Critical</p>
             </div>
           </div>
         </div>
@@ -71,7 +76,7 @@ const DashboardIFA: React.FC = () => {
       {/* Charts Row */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 h-80">
         <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col">
-          <h3 className="text-sm font-semibold text-slate-700 mb-4">Revenue vs Expenses</h3>
+          <h3 className="text-sm font-semibold text-slate-700 mb-4">Revenue vs Expenses (In Millions)</h3>
           <div className="flex-1 min-h-0">
             <ResponsiveContainer width="100%" height="100%">
               <LineChart data={mockCashFlow}>
@@ -88,7 +93,7 @@ const DashboardIFA: React.FC = () => {
         </div>
 
         <div className="bg-white p-4 rounded-xl shadow-sm border border-slate-200 flex flex-col">
-          <h3 className="text-sm font-semibold text-slate-700 mb-4">Stock Levels vs Threshold</h3>
+          <h3 className="text-sm font-semibold text-slate-700 mb-4">Stock Levels (COSO Audit Trail)</h3>
           <div className="flex-1 min-h-0">
             <ResponsiveContainer width="100%" height="100%">
               <BarChart data={mockInventory} layout="vertical">
@@ -107,9 +112,9 @@ const DashboardIFA: React.FC = () => {
       
       {/* AI Insight Box */}
       <div className="bg-teal-50 border border-teal-200 rounded-lg p-4">
-        <h4 className="text-teal-800 font-semibold mb-1 text-sm">AI Analysis</h4>
+        <h4 className="text-teal-800 font-semibold mb-1 text-sm">AI Financial Analysis</h4>
         <p className="text-teal-700 text-sm">
-          Based on recent trends, Amoxicillin stock is critical. Recommendation: Initiate purchase order #PO-492 immediately to avoid stockout. Cash flow in March dipped due to annual equipment maintenance; recovery in April confirmed.
+          <b>Amoxicillin</b> is below threshold. As per COSO procurement protocols, initiate PO-492 with dual-authorization. Q3 revenue spike correlates with the new digital billing system implementation, reducing manual entry errors by 85%.
         </p>
       </div>
     </div>

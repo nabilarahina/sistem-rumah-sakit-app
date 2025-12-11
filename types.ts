@@ -11,6 +11,7 @@ export interface ChatMessage {
   content: string;
   timestamp: Date;
   agentUsed: AgentType;
+  sources?: Array<{ title: string; uri: string }>;
 }
 
 export interface InventoryItem {
